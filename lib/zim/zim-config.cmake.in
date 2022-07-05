@@ -1,0 +1,8 @@
+include(CMakeFindDependencyMacro)
+
+# Include dependencies
+find_dependency(malloy REQUIRED)
+find_dependency(nlohmann_json REQUIRED)
+
+# Add the targets file
+include("${CMAKE_CURRENT_LIST_DIR}/zim-targets.cmake")
