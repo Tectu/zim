@@ -58,13 +58,16 @@ database::init()
 bool
 database::add_image(const std::string& caption, const std::string& data)
 {
-    const std::string sql{
-        "INSERT INTO images\n"
-        "(caption, data)\n"
-        "VALUES('" + caption + "', '" + data + "');"
-    };
+    sqlite3_stmt* stmt;
+    if (sqlite3_prepare_v2(m_db, "INSERT INTO images (caption, data) VALUES(?, ?)", -1, &stmt, nullptr)) {
+        m_logger->error("could not prepare sql statement");
+        return false;
+    }
 
-    if (const int rc = sqlite3_exec(m_db, sql.c_str(), nullptr, nullptr, nullptr); rc != SQLITE_OK) {
+    sqlite3_bind_text(stmt, 1, caption.c_str(), -1, nullptr);
+    sqlite3_bind_blob(stmt, 2, data.c_str(), data.size(), SQLITE_STATIC);
+
+    if (const int rc = sqlite3_step(stmt); rc != SQLITE_OK) {
         m_logger->error("could not insert image into database: {}", sqlite3_errmsg(m_db));
         return false;
     }
