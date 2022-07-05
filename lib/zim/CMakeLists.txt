@@ -69,7 +69,7 @@ install(
     EXPORT zim-targets
     FILE_SET
         HEADERS
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/zim/core
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/zim
 )
 
 install(
