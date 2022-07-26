@@ -56,14 +56,14 @@ database::init()
 }
 
 bool
-database::add_image(const std::string& caption, const std::string& data)
+database::add_image(const image& img)
 {
     // Sanity check
     if (!m_db)
         return false;
 
     // ToDo: error handling
-    soci::statement stmt = (m_db->prepare << "INSERT INTO images (caption, data) VALUES(:1, :2)", soci::use(caption), soci::use(data));
+    soci::statement stmt = (m_db->prepare << "INSERT INTO images (caption, data) VALUES(:1, :2)", soci::use(img.caption), soci::use(img.data));
 
     // ToDo:: error handling
     stmt.execute(true);

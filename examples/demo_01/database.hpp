@@ -27,6 +27,7 @@ public:
     {
         int id;
         std::string caption;
+        std::string mime_type;
         std::string data;
     };
 
@@ -42,7 +43,7 @@ public:
     init();
 
     bool
-    add_image(const std::string& caption, const std::string& data);
+    add_image(const image& img);
 
     std::vector<image>
     images();

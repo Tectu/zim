@@ -50,18 +50,19 @@ app::init()
             form.populate_values_from_parsed_data();
 
             // Extract values & perform sanity checks
-            const std::string& caption = form.content("caption").value_or("");
-            const std::string& image = form.content("image").value_or("");
+            database::image img;
+            img.caption = form.content("caption").value_or("");
+            img.data = form.content("image").value_or("");
             {
-                if (caption.empty())
+                if (img.caption.empty())
                     return generator::bad_request("caption must not be empty.");
 
-                if (image.empty())
+                if (img.data.empty())
                     return generator::bad_request("image must not be empty.");
             }
 
             // Insert into database
-            if (const bool successful = m_db->add_image(caption, image); !successful) {
+            if (const bool successful = m_db->add_image(img); !successful) {
                 m_logger->warn("could not insert image into database.");
 
                 return generator::server_error("could not store image in database.");
