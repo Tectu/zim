@@ -1,10 +1,9 @@
 #include "app.hpp"
 #include "database.hpp"
 
-#include <malloy/server/routing_context.hpp>
-#include <malloy/server/routing/router.hpp>
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+#include <zim/controller.hpp>
 
 #include <iostream>
 
@@ -13,7 +12,7 @@ static
 std::shared_ptr<spdlog::logger>
 create_example_logger()
 {
-    auto log_level = spdlog::level::debug;
+    auto log_level = spdlog::level::trace;
 
     // Sink
     auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
@@ -28,23 +27,12 @@ create_example_logger()
 
 int main()
 {
-    using namespace malloy;
-
-    // Create malloy controller config
-    malloy::server::routing_context::config cfg;
-    cfg.interface   = "127.0.0.1";
-    cfg.port        = 8080;
-    cfg.doc_root    = "./";
-    cfg.num_threads = 1;
-    cfg.logger      = create_example_logger();
-
-    // Create malloy controller
-    malloy::server::routing_context c{cfg};
+    auto logger = create_example_logger();
 
     // Setup the database
-    auto db = std::make_shared<database>(cfg.logger->clone("database"));
+    auto db = std::make_shared<database>(logger->clone("database"));
     if (!db->init()) {
-        cfg.logger->critical("could not initialize database.");
+        logger->critical("could not initialize database.");
         return EXIT_FAILURE;
     }
 
@@ -61,20 +49,33 @@ int main()
 
     // Create top-level application
     auto toplevel_app = std::make_shared<app>(
-        cfg.logger->clone("app"),
+        logger->clone("app"),
         env,
         db
     );
     if (!toplevel_app->init()) {
-        cfg.logger->critical("initializing top-level app failed.");
+        logger->critical("initializing top-level app failed.");
         return EXIT_FAILURE;
     }
 
-    // Add top-level app router
-    c.router().add_subrouter("/apps", std::move(toplevel_app->router()));
+    // Controller config
+    zim::controller::config cfg {
+        .logger = logger,
+    };
+
+    // Controller
+    zim::controller c;
+
+    c.init(std::move(cfg), toplevel_app);
 
     // Start
-    start(std::move(c)).run();
+    c.start();
+
+    // Keep the application alive
+    while (true) {
+        using namespace std::chrono_literals;
+        std::this_thread::sleep_for(1s);
+    }
 
     return EXIT_SUCCESS;
 }

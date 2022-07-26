@@ -23,6 +23,7 @@ target_sources(
         HEADERS
         FILES
             app.hpp
+            controller.hpp
             environment.hpp
             page.hpp
             page_content.hpp
@@ -30,6 +31,7 @@ target_sources(
 
     PRIVATE
         app.cpp
+        controller.cpp
         page_content.cpp
         page_master.cpp
 )
