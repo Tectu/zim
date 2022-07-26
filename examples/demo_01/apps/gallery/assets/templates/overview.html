@@ -1,3 +1,14 @@
 <div class="w3-container w3-teal">
     <h1>Gallery - Overview</h1>
 </div>
+
+<div>
+    {% for image in content.images %}
+    <div class="gallery">
+        <a target="_blank" href="{{ system.site_url }}/gallery/image/{{ image.id }}">
+            <img width="600" height="400" src="{{ system.site_url }}/gallery/image/{{ image.id }}">
+        </a>
+        <div class="desc">{{ image.caption }}</div>
+    </div>
+    {% endfor %}
+</div>

@@ -26,7 +26,7 @@ app::init()
 
     // Setup pages
     {
-        m_page_overview = std::make_shared<pages::overview>(m_master_page);
+        m_page_overview = std::make_shared<pages::overview>(m_master_page, m_db);
         m_page_upload = std::make_shared<pages::upload>(m_master_page);
     }
 
@@ -69,6 +69,32 @@ app::init()
 
             // Upload was successful, redirect to root page
             return generator::redirect(status::see_other, "");
+        });
+
+        // GET image endpoint
+        m_router->add(method::get, "/image/(\\d+)", [this](const auto& req, const auto& captures) {
+            if (captures.size() != 1)
+                return generator::bad_request("invalid image id");
+
+            try {
+                const int id = std::stoi(captures[0]);
+                const auto& image_opt = m_db->get_image(id);
+                if (!image_opt)
+                    return generator::bad_request("could not retrieve image by id.");
+
+                // Assemble response
+                //response<boost::beast::http::file_body> resp{status::ok};
+                response resp{status::ok};
+                //resp.set(field::content_type, mime_type);
+                resp.body() = image_opt->data;
+                resp.prepare_payload(); // ToDo: Is this needed or does malloy handle that for us?
+
+                return resp;
+            }
+            catch (const std::exception& e) {
+                m_logger->warn("could not retrieve image from database. exception: {}", e.what());
+                return generator::server_error("could not get image from database.");
+            }
         });
     }
 

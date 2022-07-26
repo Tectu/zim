@@ -1,9 +1,13 @@
 #pragma once
 
 #include <memory>
+#include <optional>
 #include <string>
 
-struct sqlite3;
+namespace soci
+{
+    class session;
+}
 
 namespace spdlog
 {
@@ -19,6 +23,13 @@ namespace spdlog
 class database
 {
 public:
+    struct image
+    {
+        int id;
+        std::string caption;
+        std::string data;
+    };
+
     explicit database(std::shared_ptr<spdlog::logger> logger);
     database(const database&) = delete;
     database(database&&) noexcept = delete;
@@ -33,7 +44,13 @@ public:
     bool
     add_image(const std::string& caption, const std::string& data);
 
+    std::vector<image>
+    images();
+
+    std::optional<image>
+    get_image(int id);
+
 private:
     std::shared_ptr<spdlog::logger> m_logger;
-    sqlite3* m_db = nullptr;
+    std::shared_ptr<soci::session> m_db = nullptr;
 };

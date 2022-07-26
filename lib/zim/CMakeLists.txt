@@ -40,6 +40,8 @@ target_link_libraries(
     ${TARGET}
     PUBLIC
         malloy::malloy-server
+        soci_core
+        soci_sqlite3
 )
 
 

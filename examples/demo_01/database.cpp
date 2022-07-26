@@ -1,7 +1,7 @@
 #include "database.hpp"
 
+#include <soci/soci.h>
 #include <spdlog/logger.h>
-#include <sqlite3.h>
 
 #include <stdexcept>
 
@@ -14,18 +14,19 @@ database::database(std::shared_ptr<spdlog::logger> logger) :
 
 database::~database() noexcept
 {
-    sqlite3_close(m_db);
+    // ToDo: Anything we have to do with the SOCI session?
 }
 
 bool
 database::init()
 {
-    // Open DB
-    if (const int rc = sqlite3_open("demo_01.sqlite", &m_db); rc != SQLITE_OK) {
-        m_logger->critical("could not open database: {}", sqlite3_errmsg(m_db));
-        sqlite3_close(m_db);
-        m_db = nullptr;
-
+    // Connect to database
+    try {
+        m_db = std::make_shared<soci::session>("sqlite3", "demo_01.sqlite");
+    }
+    catch (const std::exception& e) {
+        m_logger->critical("could not open database: {}", e.what());
+        m_db = { };
         return false;
     }
 
@@ -43,12 +44,11 @@ database::init()
             ");"
         );
 
+        // ToDo: Error checking
         for (const auto& stmt : statements) {
-            if (const int rc = sqlite3_exec(m_db, stmt.c_str(), nullptr, nullptr, nullptr); rc != SQLITE_OK) {
-                m_logger->critical("could not create table: {}", sqlite3_errmsg(m_db));
+            soci::statement st = (m_db->prepare << stmt);
 
-                return false;
-            }
+            st.execute(true);
         }
     }
 
@@ -58,19 +58,73 @@ database::init()
 bool
 database::add_image(const std::string& caption, const std::string& data)
 {
-    sqlite3_stmt* stmt;
-    if (sqlite3_prepare_v2(m_db, "INSERT INTO images (caption, data) VALUES(?, ?)", -1, &stmt, nullptr)) {
-        m_logger->error("could not prepare sql statement");
+    // Sanity check
+    if (!m_db)
         return false;
-    }
 
-    sqlite3_bind_text(stmt, 1, caption.c_str(), -1, nullptr);
-    sqlite3_bind_blob(stmt, 2, data.c_str(), data.size(), SQLITE_STATIC);
+    // ToDo: error handling
+    soci::statement stmt = (m_db->prepare << "INSERT INTO images (caption, data) VALUES(:1, :2)", soci::use(caption), soci::use(data));
 
-    if (const int rc = sqlite3_step(stmt); rc != SQLITE_OK) {
-        m_logger->error("could not insert image into database: {}", sqlite3_errmsg(m_db));
-        return false;
-    }
+    // ToDo:: error handling
+    stmt.execute(true);
 
     return true;
+}
+
+std::vector<database::image>
+database::images()
+{
+    // Sanity check
+    if (!m_db)
+        return { };
+
+    std::vector<image> images;
+
+    // ToDo: Error handling
+    soci::rowset<soci::row> rs = (m_db->prepare << "SELECT id, caption, data FROM IMAGES");
+    for (soci::rowset<soci::row>::const_iterator it = rs.begin(); it != rs.end(); ++it) {
+        const soci::row& row = *it;
+
+        try {
+            image img;
+            img.id      = row.get<int>(0);
+            img.caption = row.get<std::string>(1);
+            img.data    = row.get<std::string>(2);
+            images.emplace_back(std::move(img));
+        }
+        catch (const std::exception& e) {
+            m_logger->warn("exception: {}", e.what());
+            return { };
+        }
+    }
+
+    return images;
+}
+
+std::optional<database::image>
+database::get_image(const int id)
+{
+    // Sanity check
+    if (!m_db)
+        return { };
+
+    soci::rowset<soci::row> rs = (m_db->prepare << "SELECT id, caption, data FROM IMAGES WHERE id = :1", soci::use(id));
+    for (soci::rowset<soci::row>::const_iterator it = rs.begin(); it != rs.end(); ++it) {
+        const soci::row& row = *it;
+
+        try {
+            image img;
+            img.id      = row.get<int>(0);
+            img.caption = row.get<std::string>(1);
+            img.data    = row.get<std::string>(2);
+
+            return img;
+        }
+        catch (const std::exception& e) {
+            m_logger->warn("exception: {}", e.what());
+            return { };
+        }
+    }
+
+    return { };
 }
