@@ -7,6 +7,7 @@ target_sources(
         FILES
             manager.hpp
             session.hpp
+            types.hpp
 
     PRIVATE
         manager.cpp

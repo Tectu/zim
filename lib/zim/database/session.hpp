@@ -9,4 +9,5 @@ namespace zim::database
      * A database session.
      */
     using session = soci::session;
+
 }

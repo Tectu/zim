@@ -1,7 +1,7 @@
 #pragma once
 
 #include "environment.hpp"
-#include "database/session.hpp"
+#include "database/types.hpp"
 
 #include <malloy/server/routing/router.hpp>
 #include <spdlog/logger.h>
@@ -27,11 +27,6 @@ namespace zim
         friend controller;
 
     public:
-        /**
-         * Getter for a database session.
-         */
-        using db_session_getter_t = std::function<std::shared_ptr<database::session>()>;
-
         app(
             std::shared_ptr<spdlog::logger> logger,
             std::string name,
@@ -69,7 +64,6 @@ namespace zim
         environment m_env;
         std::shared_ptr<spdlog::logger> m_logger;
         std::unique_ptr<malloy::server::router> m_router;
-        db_session_getter_t m_db_session_getter;
 
         /**
          * Adds an endpoint for an HTML page.
@@ -129,6 +123,16 @@ namespace zim
         }
 
         /**
+         * Get a copy of the database session getter.
+         */
+        [[nodiscard]]
+        database::session_getter_t
+        database_session_getter() const
+        {
+            return m_db_session_getter;
+        }
+
+        /**
          * Get a database session.
          *
          * @return The database session.
@@ -146,6 +150,7 @@ namespace zim
     private:
         std::string m_name;
         std::vector<std::shared_ptr<app>> m_subapps;
+        database::session_getter_t m_db_session_getter;
     };
 
 }
