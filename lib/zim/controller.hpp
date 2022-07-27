@@ -15,6 +15,11 @@ namespace zim
     class app;
 }
 
+namespace zim::database
+{
+    class manager;
+}
+
 namespace zim
 {
 
@@ -37,6 +42,14 @@ namespace zim
                 std::filesystem::path doc_root  = "./";
                 std::size_t num_threads         = 1;
             } webserver;
+
+            /**
+             * Database related configuration.
+             */
+            // ToDo: Add connection string
+            struct database {
+                std::size_t connection_pool_size = 1;
+            } database;
         };
 
         controller() = default;
@@ -62,6 +75,7 @@ namespace zim
         std::shared_ptr<spdlog::logger> m_logger;
         std::shared_ptr<malloy::server::routing_context> m_malloy_controller;
         std::optional<malloy::server::routing_context::session> m_malloy_session;
+        std::shared_ptr<database::manager> m_db_manager;
     };
 
 }

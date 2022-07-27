@@ -1,8 +1,13 @@
 include(external.cmake)
 
+# Define directory base path for FILE_SET
+set(ZIM_HEADERS_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+
 set(TARGET zim)
 
 add_library(${TARGET})
+
+add_subdirectory(database)
 
 target_compile_features(
     ${TARGET}
@@ -21,6 +26,7 @@ target_sources(
     PUBLIC
         FILE_SET
         HEADERS
+        BASE_DIRS ${ZIM_HEADERS_BASE_DIR}
         FILES
             app.hpp
             controller.hpp

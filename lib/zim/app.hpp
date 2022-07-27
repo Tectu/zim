@@ -1,18 +1,21 @@
 #pragma once
 
 #include "environment.hpp"
+#include "database/session.hpp"
 
 #include <malloy/server/routing/router.hpp>
 #include <spdlog/logger.h>
 
 #include <concepts>
 #include <filesystem>
+#include <functional>
 #include <memory>
 #include <string>
 #include <vector>
 
 namespace zim
 {
+    class controller;   // ToDo: See friend declaration below
     class page;
 
     /**
@@ -20,7 +23,15 @@ namespace zim
      */
     class app
     {
+        // ToDo: only until the controller provides a root-app
+        friend controller;
+
     public:
+        /**
+         * Getter for a database session.
+         */
+        using db_session_getter_t = std::function<std::shared_ptr<database::session>()>;
+
         app(
             std::shared_ptr<spdlog::logger> logger,
             std::string name,
@@ -58,6 +69,7 @@ namespace zim
         environment m_env;
         std::shared_ptr<spdlog::logger> m_logger;
         std::unique_ptr<malloy::server::router> m_router;
+        db_session_getter_t m_db_session_getter;
 
         /**
          * Adds an endpoint for an HTML page.
@@ -95,6 +107,7 @@ namespace zim
             app->m_env = m_env.make_sub_environment(name);
             app->m_logger = m_logger->clone(m_logger->name() + " | " + name);
             app->m_router = std::make_unique<malloy::server::router>(m_logger->clone(m_logger->name() + " | "  + name + " | router"));
+            app->m_db_session_getter = m_db_session_getter; // ToDo: Is this thread safe when we copy it?
 
             // Initialize app
             if (!app->init()) {
@@ -113,6 +126,21 @@ namespace zim
             m_subapps.emplace_back(std::move(app));
 
             return true;
+        }
+
+        /**
+         * Get a database session.
+         *
+         * @return The database session.
+         */
+        [[nodiscard]]
+        std::shared_ptr<database::session>
+        get_database_session() const
+        {
+            if (!m_db_session_getter)
+                return { };
+
+            return m_db_session_getter();
         }
 
     private:

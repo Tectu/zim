@@ -1,10 +1,12 @@
 #include "controller.hpp"
 #include "app.hpp"
+#include "database/manager.hpp"
 
 #include <spdlog/logger.h>
 
 using namespace zim;
 
+// ToDo: it's probably better if the controller provides a root-app from which the user can create sub-apps.
 bool
 controller::init(config&& cfg, std::shared_ptr<zim::app> app)
 {
@@ -47,9 +49,21 @@ controller::init(config&& cfg, std::shared_ptr<zim::app> app)
     // Register top-level app
     m_malloy_controller->router().add_subrouter("/apps", std::move(app->router()));
 
+    // Database
+    {
+        // Manager
+        m_db_manager = std::make_shared<database::manager>(m_cfg.database.connection_pool_size);
+
+        // Application session getter
+        app->m_db_session_getter = [this]{
+            return m_db_manager->get_session();
+        };
+    }
+
     return true;
 }
 
+// ToDo: Database manager/connections
 void
 controller::start()
 {
@@ -60,6 +74,7 @@ controller::start()
     m_malloy_session.emplace( std::move(malloy::server::start(std::move(*m_malloy_controller))) );
 }
 
+// ToDo: Database manager/connections
 void
 controller::stop()
 {
