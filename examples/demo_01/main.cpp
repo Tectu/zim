@@ -36,45 +36,9 @@ int main()
         return EXIT_FAILURE;
     }
 
-#if 0
-    // Setup application environment
-    zim::environment env {
-        .site {
-            .base_url       = "http://127.0.0.1:8080",
-        },
-        .app {
-            .base_url       = "http://127.0.0.1:8080",
-            .assets_fs_path = "../../../examples/demo_01/assets",
-        }
-    };
-
-    // Create top-level application
-    auto toplevel_app = std::make_shared<app>(
-        logger->clone("app"),
-        env,
-        db
-    );
-    if (!toplevel_app->init()) {
-        logger->critical("initializing top-level app failed.");
-        return EXIT_FAILURE;
-    }
-
     // Controller config
     zim::controller::config cfg {
         .logger = logger,
-    };
-
-    // Controller
-    zim::controller c;
-    if (!c.init(std::move(cfg), toplevel_app)) {
-        logger->critical("initializing zim controller failed.");
-        return EXIT_FAILURE;
-    }
-#else
-
-    // Controller config
-    zim::controller::config cfg {
-            .logger = logger,
     };
 
     // Controller
@@ -84,16 +48,12 @@ int main()
         return EXIT_FAILURE;
     }
 
-    if (!c.make_app<app>(
-        "app",
-        logger->clone("app"),
-        db
-    )) {
+    // Create our application
+    if (!c.make_app<app>("app", logger->clone("app"), db)) {
         logger->critical("could not create app.");
         return EXIT_FAILURE;
     }
 
-#endif
     // Start
     c.start();
 
