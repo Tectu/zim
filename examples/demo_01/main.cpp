@@ -65,8 +65,10 @@ int main()
 
     // Controller
     zim::controller c;
-
-    c.init(std::move(cfg), toplevel_app);
+    if (!c.init(std::move(cfg), toplevel_app)) {
+        logger->critical("initializing zim controller failed.");
+        return EXIT_FAILURE;
+    }
 
     // Start
     c.start();
