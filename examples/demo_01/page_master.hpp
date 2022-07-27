@@ -17,7 +17,7 @@ private:
         nlohmann::json j;
 
         j["system"]["site_url"] = "http://127.0.0.1:8080/apps";
-        j["system"]["assets_base_url"] = "http://127.0.0.1:8080/apps";
+        j["system"]["assets_base_url"] = "http://127.0.0.1:8080/apps/app";
 
         return j;
     }

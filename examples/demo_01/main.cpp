@@ -36,6 +36,7 @@ int main()
         return EXIT_FAILURE;
     }
 
+#if 0
     // Setup application environment
     zim::environment env {
         .site {
@@ -69,7 +70,30 @@ int main()
         logger->critical("initializing zim controller failed.");
         return EXIT_FAILURE;
     }
+#else
 
+    // Controller config
+    zim::controller::config cfg {
+            .logger = logger,
+    };
+
+    // Controller
+    zim::controller c;
+    if (!c.init(std::move(cfg))) {
+        logger->critical("initializing zim controller failed.");
+        return EXIT_FAILURE;
+    }
+
+    if (!c.make_app<app>(
+        "app",
+        logger->clone("app"),
+        db
+    )) {
+        logger->critical("could not create app.");
+        return EXIT_FAILURE;
+    }
+
+#endif
     // Start
     c.start();
 

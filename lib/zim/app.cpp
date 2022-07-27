@@ -22,7 +22,7 @@ app::app(
     if (m_name.empty())
         throw std::invalid_argument("application name must not be empty.");
 
-    m_router = std::make_unique<malloy::server::router>();
+    m_router = std::make_unique<malloy::server::router>(m_logger->clone("foobar"));
 }
 
 bool

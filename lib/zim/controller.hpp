@@ -1,7 +1,10 @@
 #pragma once
 
+#include "app.hpp"
+
 #include <malloy/server/routing_context.hpp>
 
+#include <concepts>
 #include <memory>
 #include <optional>
 
@@ -62,7 +65,7 @@ namespace zim
 
         [[nodiscard("init might fail")]]
         bool
-        init(config&& cfg, std::shared_ptr<zim::app> app);
+        init(config&& cfg);
 
         void
         start();
@@ -70,12 +73,29 @@ namespace zim
         void
         stop();
 
+        template<class App, typename... Args>
+            requires std::derived_from<App, app>
+        bool
+        make_app(const std::string& name, Args&&... args)
+        {
+            // Sanity check
+            if (!m_toplevel_app)
+                return false;
+
+            // Delegate
+            return m_toplevel_app->make_subapp<App, Args...>(name, std::forward<Args>(args)...);
+        }
+
     private:
         config m_cfg;
         std::shared_ptr<spdlog::logger> m_logger;
         std::shared_ptr<malloy::server::routing_context> m_malloy_controller;
         std::optional<malloy::server::routing_context::session> m_malloy_session;
         std::shared_ptr<database::manager> m_db_manager;
+        std::shared_ptr<zim::app> m_toplevel_app;
+
+        bool
+        create_toplevel_app();
     };
 
 }

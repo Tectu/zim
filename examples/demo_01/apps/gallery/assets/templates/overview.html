@@ -5,7 +5,7 @@
 <div>
     {% for image in content.images %}
     <div class="gallery w3-card-4">
-        <img width="600" height="400" src="{{ system.site_url }}/gallery/image/{{ image.id }}">
+        <img width="600" height="400" src="{{ system.site_url }}/app/gallery/image/{{ image.id }}">
         <div class="desc">{{ image.caption }}</div>
     </div>
     {% endfor %}

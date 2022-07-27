@@ -2,11 +2,6 @@
 
 #include "../../database.hpp"
 
-
-
-
-#include <spdlog/spdlog.h>
-
 namespace apps::gallery::pages
 {
 

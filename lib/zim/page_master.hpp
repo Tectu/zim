@@ -20,7 +20,6 @@ namespace zim
         public page
     {
     public:
-        explicit
         page_master(std::filesystem::path template_path);
 
         page_master() = delete;

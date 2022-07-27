@@ -14,7 +14,6 @@ class app :
 public:
     app(
         std::shared_ptr<spdlog::logger> logger,
-        zim::environment env,
         std::shared_ptr<database> db
     );
 

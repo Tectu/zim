@@ -27,6 +27,8 @@ namespace zim
         friend controller;
 
     public:
+        // ToDo: This should probably disappear and ctor should be private as only make_subapp() is a valid way of
+        //       creating an app.
         app(
             std::shared_ptr<spdlog::logger> logger,
             std::string name,
@@ -44,7 +46,10 @@ namespace zim
         [[nodiscard]]
         virtual
         bool
-        init() = 0;
+        init()
+        {
+            return true;
+        }
 
         [[nodiscard]]
         std::string_view
@@ -100,6 +105,9 @@ namespace zim
                 m_logger->error("could not make sub-app. parent app has no router.");
                 return false;
             }
+
+            m_logger->debug("make_subapp(\"{}\")", name);
+            m_logger->debug("  parent app name: \"{}\"", this->name());
 
             // Create & setup app
             auto app = std::make_shared<App>(std::forward<Args>(args)...);
