@@ -95,6 +95,12 @@ namespace zim
                 return false;
             }
 
+            // Make sure that the parent app (this) still has a router
+            if (!m_router) {
+                m_logger->error("could not make sub-app. parent app has no router.");
+                return false;
+            }
+
             // Create & setup app
             auto app = std::make_shared<App>(std::forward<Args>(args)...);
             app->m_name = name;
