@@ -1,6 +1,7 @@
 #pragma once
 
 #include "app.hpp"
+#include "database/config.hpp"
 
 #include <malloy/server/routing_context.hpp>
 
@@ -49,10 +50,7 @@ namespace zim
             /**
              * Database related configuration.
              */
-            // ToDo: Add connection string
-            struct database {
-                std::size_t connection_pool_size = 1;
-            } database;
+            database::config database;
         };
 
         controller() = default;
