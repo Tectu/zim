@@ -68,7 +68,7 @@ controller::start()
 
     // Add the top-level router
     // Note: We do this here rather than anywhere else as this "removes" the router from the top-level app making any subsequent calls to
-    //       controller::make_app() invalid as the top-level app would not have any router anymore.
+    //       controller::make_app() and app::make_subapp() invalid as the top-level app would not have any router anymore.
     m_malloy_controller->router().add_subrouter("/" + std::string{ m_toplevel_app->name() }, std::move(m_toplevel_app->router()));
 
     // Start malloy
