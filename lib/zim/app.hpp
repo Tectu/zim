@@ -101,9 +101,6 @@ namespace zim
                 return false;
             }
 
-            m_logger->debug("make_subapp(\"{}\")", name);
-            m_logger->debug("  parent app name: \"{}\"", this->name());
-
             // Create & setup app
             auto app = std::make_shared<App>(std::forward<Args>(args)...);
             app->m_name = name;
