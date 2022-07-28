@@ -27,7 +27,7 @@ namespace apps::gallery::pages
                 // Create form
                 m_form = std::make_shared<malloy::html::form>(
                     malloy::http::method::post,
-                    "http://127.0.0.1:8080/apps/gallery/upload",
+                    "http://127.0.0.1:8080/apps/app/gallery/upload",
                     malloy::html::form::encoding::multipart
                 );
 

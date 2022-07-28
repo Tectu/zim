@@ -31,10 +31,6 @@ int main()
 
     // Setup the database
     auto db = std::make_shared<database>(logger->clone("database"));
-    if (!db->init()) {
-        logger->critical("could not initialize database.");
-        return EXIT_FAILURE;
-    }
 
     // Controller config
     zim::controller::config cfg {
@@ -51,6 +47,12 @@ int main()
     // Create our application
     if (!c.make_app<app>("app", logger->clone("app"), db)) {
         logger->critical("could not create app.");
+        return EXIT_FAILURE;
+    }
+
+    // Create database tables
+    if (!db->create_tables()) {
+        logger->critical("could not create database tables.");
         return EXIT_FAILURE;
     }
 

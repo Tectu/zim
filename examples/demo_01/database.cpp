@@ -17,39 +17,56 @@ database::~database() noexcept
     // ToDo: Anything we have to do with the SOCI session?
 }
 
-bool
-database::init()
+std::shared_ptr<zim::database::session>
+database::get_session() noexcept
 {
-    // Connect to database
+    std::shared_ptr<zim::database::session> session;
+
     try {
-        m_db = std::make_shared<soci::session>("sqlite3", "demo_01.sqlite");
+        // Sanity check
+        if (!session_getter) {
+            m_logger->warn("database: no session getter");
+            return { };
+        }
+
+        session = session_getter();
+        if (!session) {
+            m_logger->warn("database: could not get session");
+            return { };
+        }
     }
     catch (const std::exception& e) {
-        m_logger->critical("could not open database: {}", e.what());
-        m_db = { };
-        return false;
+        m_logger->error("database: exception during session getting: {}", e.what());
+        return { };
     }
 
-    // Create tables
-    {
-        std::vector<std::string> statements;
+    return session;
+}
 
-        // Table "images"
-        statements.emplace_back(
-            "CREATE TABLE IF NOT EXISTS images"
-            "("
-            "  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
-            "  caption TEXT NOT NULL,"
-            "  data BLOB NOT NULL"
-            ");"
-        );
+bool
+database::create_tables()
+{
+    auto session = get_session();
+    if (!session)
+        return false;
 
-        // ToDo: Error checking
-        for (const auto& stmt : statements) {
-            soci::statement st = (m_db->prepare << stmt);
+    std::vector<std::string> statements;
 
-            st.execute(true);
-        }
+    // Table "images"
+    statements.emplace_back(
+        "CREATE TABLE IF NOT EXISTS images"
+        "("
+        "  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+        "  caption TEXT NOT NULL,"
+        "  data BLOB NOT NULL"
+        ");"
+    );
+
+    // ToDo: Error checking
+    for (const auto& stmt : statements) {
+        soci::statement st = (session->prepare << stmt);
+
+        st.execute(true);
     }
 
     return true;
@@ -58,12 +75,12 @@ database::init()
 bool
 database::add_image(const image& img)
 {
-    // Sanity check
-    if (!m_db)
+    auto session = get_session();
+    if (!session)
         return false;
 
     // ToDo: error handling
-    soci::statement stmt = (m_db->prepare << "INSERT INTO images (caption, data) VALUES(:1, :2)", soci::use(img.caption), soci::use(img.data));
+    soci::statement stmt = (session->prepare << "INSERT INTO images (caption, data) VALUES(:1, :2)", soci::use(img.caption), soci::use(img.data));
 
     // ToDo:: error handling
     stmt.execute(true);
@@ -74,14 +91,14 @@ database::add_image(const image& img)
 std::vector<database::image>
 database::images()
 {
-    // Sanity check
-    if (!m_db)
+    auto session = get_session();
+    if (!session)
         return { };
 
     std::vector<image> images;
 
     // ToDo: Error handling
-    soci::rowset<soci::row> rs = (m_db->prepare << "SELECT id, caption, data FROM IMAGES");
+    soci::rowset<soci::row> rs = (session->prepare << "SELECT id, caption, data FROM IMAGES");
     for (soci::rowset<soci::row>::const_iterator it = rs.begin(); it != rs.end(); ++it) {
         const soci::row& row = *it;
 
@@ -104,11 +121,11 @@ database::images()
 std::optional<database::image>
 database::get_image(const int id)
 {
-    // Sanity check
-    if (!m_db)
+    auto session = get_session();
+    if (!session)
         return { };
 
-    soci::rowset<soci::row> rs = (m_db->prepare << "SELECT id, caption, data FROM IMAGES WHERE id = :1", soci::use(id));
+    soci::rowset<soci::row> rs = (session->prepare << "SELECT id, caption, data FROM IMAGES WHERE id = :1", soci::use(id));
     for (soci::rowset<soci::row>::const_iterator it = rs.begin(); it != rs.end(); ++it) {
         const soci::row& row = *it;
 

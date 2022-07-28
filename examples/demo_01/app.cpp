@@ -1,4 +1,5 @@
 #include "app.hpp"
+#include "database.hpp"
 #include "page_master.hpp"
 #include "apps/gallery/app.hpp"
 
@@ -19,6 +20,9 @@ app::app(
 bool
 app::init()
 {
+    // Set database session getter
+    m_db->session_getter = database_session_getter();
+
     // Create master page
     m_master_page = std::make_shared<page_master>();
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <zim/database/types.hpp>
+
 #include <memory>
 #include <optional>
 #include <string>
@@ -23,6 +25,9 @@ namespace spdlog
 class database
 {
 public:
+    // ToDo: This should be more restricted. Should probably also be atomic.
+    zim::database::session_getter_t session_getter;
+
     struct image
     {
         int id;
@@ -40,7 +45,7 @@ public:
     database& operator=(database&&) noexcept = delete;
 
     bool
-    init();
+    create_tables();
 
     bool
     add_image(const image& img);
@@ -54,4 +59,8 @@ public:
 private:
     std::shared_ptr<spdlog::logger> m_logger;
     std::shared_ptr<soci::session> m_db = nullptr;
+
+    [[nodiscard]]
+    std::shared_ptr<zim::database::session>
+    get_session() noexcept;
 };
