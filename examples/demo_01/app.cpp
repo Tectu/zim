@@ -7,7 +7,6 @@
 #include <spdlog/logger.h>
 
 app::app(
-    std::shared_ptr<spdlog::logger> logger,
     std::shared_ptr<database> db
 ) :
     m_db(std::move(db))

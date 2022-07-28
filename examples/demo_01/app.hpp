@@ -12,10 +12,7 @@ class app :
     public zim::app
 {
 public:
-    app(
-        std::shared_ptr<spdlog::logger> logger,
-        std::shared_ptr<database> db
-    );
+    explicit app(std::shared_ptr<database> db);
 
     ~app() override = default;
 

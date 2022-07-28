@@ -20,6 +20,9 @@ namespace zim
 
     /**
      * A base class for an application.
+     *
+     * @note A user would typically subclass this and use `controller::make_app()` and `app::make_subapp()` to create
+     *       the actual application instance.
      */
     class app
     {
@@ -27,14 +30,6 @@ namespace zim
         friend controller;
 
     public:
-        // ToDo: This should probably disappear and ctor should be private as only make_subapp() is a valid way of
-        //       creating an app.
-        app(
-            std::shared_ptr<spdlog::logger> logger,
-            std::string name,
-            environment env
-        );
-
         app() = default;
         app(const app&) = delete;
         app(app&&) noexcept = delete;

@@ -45,7 +45,7 @@ int main()
     }
 
     // Create our application
-    if (!c.make_app<app>("app", logger->clone("app"), db)) {
+    if (!c.make_app<app>("app", db)) {
         logger->critical("could not create app.");
         return EXIT_FAILURE;
     }
