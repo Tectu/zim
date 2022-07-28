@@ -1,5 +1,6 @@
 #pragma once
 
+#include "config.hpp"
 #include "session.hpp"
 
 #include <memory>
@@ -24,10 +25,10 @@ namespace zim::database
         /**
          * Constructor.
          *
-         * @param pool_size The number of connections in the pool.
+         * @param cfg The configuration.
          */
         explicit
-        manager(std::size_t pool_size);
+        manager(const config& cfg);
 
         /**
          * Destructor.
