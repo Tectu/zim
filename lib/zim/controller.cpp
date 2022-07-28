@@ -5,7 +5,6 @@
 
 using namespace zim;
 
-// ToDo: it's probably better if the controller provides a root-app from which the user can create sub-apps.
 bool
 controller::init(config&& cfg)
 {
