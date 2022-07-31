@@ -51,6 +51,10 @@ namespace zim
              * Database related configuration.
              */
             database::config database;
+
+            struct site {
+                std::string base_url = "http://127.0.0.1:8080";
+            } site;
         };
 
         controller() = default;

@@ -39,7 +39,11 @@ int main()
         .database = {
             .type = "sqlite3",
             .connection_string = "demo_01.sqlite",
-        }
+        },
+
+        .site = {
+            .base_url = "http://127.0.0.1:8080",
+        },
     };
 
     // Controller

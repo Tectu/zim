@@ -23,7 +23,6 @@ namespace zim
          */
         struct {
             std::string base_url;
-            std::filesystem::path assets_fs_path;
         } app;
 
         /**
@@ -40,7 +39,6 @@ namespace zim
         {
             environment env{ *this };
             env.app.base_url += "/" + name;
-            env.app.assets_fs_path /= name;
 
             return env;
         }

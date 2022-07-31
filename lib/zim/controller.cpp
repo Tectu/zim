@@ -90,14 +90,12 @@ bool
 controller::create_toplevel_app()
 {
     // Setup application environment
-    // ToDo: Use supplied config!
     zim::environment env {
         .site {
-            .base_url       = "http://127.0.0.1:8080",
+            .base_url       = m_cfg.site.base_url,
         },
         .app {
-            .base_url       = "http://127.0.0.1:8080/apps",
-            .assets_fs_path = "../../../examples/demo_01/assets",
+            .base_url       = m_cfg.site.base_url + "/apps",
         }
     };
 

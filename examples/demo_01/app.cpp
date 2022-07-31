@@ -29,7 +29,6 @@ app::init()
     make_subapp<apps::gallery::app>("gallery", m_db, m_master_page);
 
     // Endpoints
-    //m_router->add_file_serving("/assets", m_env.app.assets_fs_path);
     m_router->add_file_serving("/assets", "../../../examples/demo_01/assets");  // ToDo: Use environment
 
     return true;
