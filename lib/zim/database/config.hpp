@@ -5,7 +5,6 @@
 namespace zim::database
 {
 
-    // ToDo: Add connection string
     struct config
     {
         /**
