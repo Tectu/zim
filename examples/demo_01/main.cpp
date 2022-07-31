@@ -35,6 +35,11 @@ int main()
     // Controller config
     zim::controller::config cfg {
         .logger = logger,
+
+        .database = {
+            .type = "sqlite3",
+            .connection_string = "demo_01.sqlite",
+        }
     };
 
     // Controller

@@ -19,10 +19,6 @@ controller::init(config&& cfg)
 
     // Database
     {
-        // ToDo
-        m_cfg.database.type = "sqlite3";
-        m_cfg.database.connection_string = "demo_01.sqlite";
-
         // Manager
         m_db_manager = std::make_shared<database::manager>(m_cfg.database);
     }
