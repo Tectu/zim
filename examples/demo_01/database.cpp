@@ -17,32 +17,6 @@ database::~database() noexcept
     // ToDo: Anything we have to do with the SOCI session?
 }
 
-std::shared_ptr<zim::database::session>
-database::get_session() noexcept
-{
-    std::shared_ptr<zim::database::session> session;
-
-    try {
-        // Sanity check
-        if (!session_getter) {
-            m_logger->warn("database: no session getter");
-            return { };
-        }
-
-        session = session_getter();
-        if (!session) {
-            m_logger->warn("database: could not get session");
-            return { };
-        }
-    }
-    catch (const std::exception& e) {
-        m_logger->error("database: exception during session getting: {}", e.what());
-        return { };
-    }
-
-    return session;
-}
-
 bool
 database::create_tables()
 {

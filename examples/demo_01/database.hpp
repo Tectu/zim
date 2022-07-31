@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zim/database/types.hpp>
+#include <zim/database/client.hpp>
 
 #include <memory>
 #include <optional>
@@ -22,12 +22,10 @@ namespace spdlog
  * This is a VERY basic implementation. It was kept to a bare minimum for demonstration purposes.
  * It doesn't do any SQL injection protections/checks or other very important security checks.
  */
-class database
+class database :
+    public zim::database::client
 {
 public:
-    // ToDo: This should be more restricted. Should probably also be atomic.
-    zim::database::session_getter_t session_getter;
-
     struct image
     {
         int id;
@@ -58,9 +56,4 @@ public:
 
 private:
     std::shared_ptr<spdlog::logger> m_logger;
-    std::shared_ptr<soci::session> m_db = nullptr;
-
-    [[nodiscard]]
-    std::shared_ptr<zim::database::session>
-    get_session() noexcept;
 };

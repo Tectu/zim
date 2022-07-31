@@ -5,6 +5,7 @@ target_sources(
         HEADERS
         BASE_DIRS ${ZIM_HEADERS_BASE_DIR}
         FILES
+            client.hpp
             config.hpp
             manager.hpp
             session.hpp
