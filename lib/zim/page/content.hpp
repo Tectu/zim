@@ -7,24 +7,24 @@
 #include <filesystem>
 #include <memory>
 
-namespace zim
+namespace zim::pages
 {
-    class page_master;
+    class master;
 
     /**
      * This type represents the content portion of a page.
      */
-    class page_content :
+    class content :
         public page
     {
     public:
-        page_content(
+        content(
             std::filesystem::path template_path,
-            std::shared_ptr<page_master> master
+            std::shared_ptr<class master> master
         );
 
-        page_content() = delete;
-        ~page_content() noexcept override = default;
+        content() = delete;
+        ~content() noexcept override = default;
 
         [[nodiscard]]
         std::filesystem::path
@@ -44,7 +44,7 @@ namespace zim
 
     private:
         std::filesystem::path m_template_path;
-        std::shared_ptr<page_master> m_master;
+        std::shared_ptr<master> m_master;
     };
 
 }

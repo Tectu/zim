@@ -1,18 +1,18 @@
 #include "3rdparty/inja/inja.hpp"
-#include "page_master.hpp"
-#include "page_content.hpp"
+#include "master.hpp"
+#include "content.hpp"
 
 #include <malloy/core/http/generator.hpp>
 
-using namespace zim;
+using namespace zim::pages;
 
-page_master::page_master(std::filesystem::path template_path) :
+master::master(std::filesystem::path template_path) :
     m_tmpl_path(std::move(template_path))
 {
 }
 
 malloy::http::response<>
-page_master::render_impl(const nlohmann::json& data, const page_content* content) const
+master::render_impl(const nlohmann::json& data, const class content* content) const
 {
     using namespace malloy::http;
 
@@ -58,13 +58,13 @@ page_master::render_impl(const nlohmann::json& data, const page_content* content
 }
 
 malloy::http::response<>
-page_master::render() const
+master::render() const
 {
     return render_impl(data(), nullptr);
 }
 
 malloy::http::response<>
-page_master::render(const page_content& content) const
+master::render(const class content& content) const
 {
     // Prepare data
     nlohmann::json jd = data();

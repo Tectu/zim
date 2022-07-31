@@ -2,6 +2,7 @@
 #include "page_overview.hpp"
 #include "page_upload.hpp"
 #include "../../database.hpp"
+#include "../../page_master.hpp"
 
 #include <malloy/server/routing/router.hpp>
 
@@ -9,7 +10,7 @@ using namespace apps::gallery;
 
 app::app(
     std::shared_ptr<database> db,
-    std::shared_ptr<zim::page_master> master_page
+    std::shared_ptr<page_master> master_page
 ) :
     m_db(std::move(db)),
     m_master_page(std::move(master_page))

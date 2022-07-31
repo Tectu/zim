@@ -1,11 +1,11 @@
-#include <zim/page_master.hpp>
+#include <zim/page/master.hpp>
 
 class page_master :
-    public zim::page_master
+    public zim::pages::master
 {
 public:
     page_master() :
-        zim::page_master("../../../examples/demo_01/assets/templates/master.html")
+        zim::pages::master("../../../examples/demo_01/assets/templates/master.html")
     {
     }
 

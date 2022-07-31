@@ -7,23 +7,24 @@
 
 #include <filesystem>
 
-namespace zim
+namespace zim::pages
 {
-    class page_content;
+    class content;
 
     /**
      * Class for rendering template based HTML pages.
      *
      * @note This uses the pantor/inja template engine. See the corresponding docs for capabilities.
      */
-    class page_master :
+    class master :
         public page
     {
     public:
-        page_master(std::filesystem::path template_path);
+        explicit
+        master(std::filesystem::path template_path);
 
-        page_master() = delete;
-        ~page_master() override = default;
+        master() = delete;
+        ~master() override = default;
 
         /**
          * Renders the template without any content.
@@ -42,7 +43,7 @@ namespace zim
          */
         [[nodiscard]]
         malloy::http::response<>
-        render(const page_content& content) const;
+        render(const class content& content) const;
 
     private:
         std::filesystem::path m_tmpl_path;
@@ -54,7 +55,7 @@ namespace zim
 
         [[nodiscard]]
         malloy::http::response<>
-        render_impl(const nlohmann::json& data, const page_content* content) const;
+        render_impl(const nlohmann::json& data, const class content* content) const;
     };
 
 }

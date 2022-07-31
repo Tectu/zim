@@ -2,9 +2,7 @@
 
 #include <malloy/core/http/response.hpp>
 
-#include <string>
-
-namespace zim
+namespace zim::pages
 {
 
     /**

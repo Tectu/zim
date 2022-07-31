@@ -1,12 +1,12 @@
 #include "app.hpp"
-#include "page.hpp"
+#include "page/page.hpp"
 
 #include <stdexcept>
 
 using namespace zim;
 
 bool
-app::add_page(std::string&& target, std::shared_ptr<page> page)
+app::add_page(std::string&& target, std::shared_ptr<pages::page> page)
 {
     // Sanity check
     if (!page || !m_router)

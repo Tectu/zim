@@ -1,4 +1,4 @@
-#include <zim/page_content.hpp>
+#include <zim/page/content.hpp>
 
 #include "../../database.hpp"
 
@@ -6,15 +6,15 @@ namespace apps::gallery::pages
 {
 
     class overview :
-        public zim::page_content
+        public zim::pages::content
     {
     public:
         explicit
         overview(
-            std::shared_ptr<zim::page_master> master_page,
+            std::shared_ptr<zim::pages::master> master_page,
             std::shared_ptr<database> db
         ) :
-            zim::page_content(
+            zim::pages::content(
                 "../../../examples/demo_01/apps/gallery/assets/templates/overview.html",
                 std::move(master_page)
             ),

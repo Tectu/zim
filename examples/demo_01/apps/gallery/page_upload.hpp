@@ -2,22 +2,22 @@
 
 #include <malloy/core/html/form.hpp>
 #include <malloy/core/html/form_renderer.hpp>
-#include <zim/page_content.hpp>
+#include <zim/page/content.hpp>
 
 namespace apps::gallery::pages
 {
 
     class upload:
-        public zim::page_content
+        public zim::pages::content
     {
     public:
         std::shared_ptr<malloy::html::form> m_form;
 
         explicit
         upload(
-            std::shared_ptr<zim::page_master> master_page
+            std::shared_ptr<zim::pages::master> master_page
         ) :
-            zim::page_content(
+            zim::pages::content(
                 "../../../examples/demo_01/apps/gallery/assets/templates/upload.html",
                 std::move(master_page)
             )

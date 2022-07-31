@@ -3,11 +3,7 @@
 #include <zim/app.hpp>
 
 class database;
-
-namespace zim
-{
-    class page_master;
-}
+class page_master;
 
 namespace apps::gallery
 {
@@ -23,7 +19,7 @@ namespace apps::gallery
     public:
         app(
             std::shared_ptr<database> db,
-            std::shared_ptr<zim::page_master> master_page
+            std::shared_ptr<page_master> master_page
         );
 
         ~app() noexcept override = default;
@@ -34,7 +30,7 @@ namespace apps::gallery
 
     private:
         std::shared_ptr<database> m_db;
-        std::shared_ptr<zim::page_master> m_master_page;
+        std::shared_ptr<page_master> m_master_page;
         std::shared_ptr<pages::overview> m_page_overview;
         std::shared_ptr<pages::upload> m_page_upload;
     };

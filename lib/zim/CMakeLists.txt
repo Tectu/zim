@@ -8,6 +8,7 @@ set(TARGET zim)
 add_library(${TARGET})
 
 add_subdirectory(database)
+add_subdirectory(page)
 
 target_compile_features(
     ${TARGET}
@@ -31,15 +32,10 @@ target_sources(
             app.hpp
             controller.hpp
             environment.hpp
-            page.hpp
-            page_content.hpp
-            page_master.hpp
 
     PRIVATE
         app.cpp
         controller.cpp
-        page_content.cpp
-        page_master.cpp
 )
 
 target_link_libraries(

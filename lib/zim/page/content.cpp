@@ -1,11 +1,11 @@
-#include "page_content.hpp"
-#include "page_master.hpp"
+#include "content.hpp"
+#include "master.hpp"
 
-using namespace zim;
+using namespace zim::pages;
 
-page_content::page_content(
+content::content(
     std::filesystem::path template_path,
-    std::shared_ptr<page_master> master
+    std::shared_ptr<master> master
 ):
     m_template_path(std::move(template_path)),
     m_master(std::move(master))
@@ -16,8 +16,8 @@ page_content::page_content(
 }
 
 malloy::http::response<>
-page_content::render() const
+content::render() const
 {
-    // Rendering is done by the page_master class
+    // Rendering is performed by the page::master class
     return m_master->render(*this);
 }

@@ -16,7 +16,11 @@
 namespace zim
 {
     class controller;   // ToDo: See friend declaration below
-    class page;
+
+    namespace pages
+    {
+        class page;
+    }
 
     /**
      * A base class for an application.
@@ -73,7 +77,7 @@ namespace zim
          * @return Whether adding the endpoint was successful.
          */
         bool
-        add_page(std::string&& resource, std::shared_ptr<page>);
+        add_page(std::string&& resource, std::shared_ptr<pages::page> page);
 
         /**
          * Makes a new sub-application of type @ref App.
