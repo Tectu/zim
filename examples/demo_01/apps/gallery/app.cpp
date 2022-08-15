@@ -1,7 +1,7 @@
 #include "app.hpp"
 #include "page_overview.hpp"
 #include "page_upload.hpp"
-#include "../../database.hpp"
+#include "../../database/database.hpp"
 #include "../../page_master.hpp"
 
 #include <malloy/server/routing/router.hpp>
@@ -51,7 +51,7 @@ app::init()
             form.populate_values_from_parsed_data();
 
             // Extract values & perform sanity checks
-            database::image img;
+            image img;
             img.caption = form.content("caption").value_or("");
             img.data = form.content("image").value_or("");
             {

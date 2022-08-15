@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../types/image.hpp"
+
 #include <zim/database/client.hpp>
 
 #include <memory>
@@ -26,14 +28,6 @@ class database :
     public zim::database::client
 {
 public:
-    struct image
-    {
-        int id;
-        std::string caption;
-        std::string mime_type;
-        std::string data;
-    };
-
     explicit database(std::shared_ptr<spdlog::logger> logger);
     database(const database&) = delete;
     database(database&&) noexcept = delete;

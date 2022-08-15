@@ -62,7 +62,7 @@ database::add_image(const image& img)
     return true;
 }
 
-std::vector<database::image>
+std::vector<image>
 database::images()
 {
     auto session = get_session();
@@ -92,13 +92,14 @@ database::images()
     return images;
 }
 
-std::optional<database::image>
+std::optional<image>
 database::get_image(const int id)
 {
     auto session = get_session();
     if (!session)
         return { };
 
+    // ToDo: Error handling
     soci::rowset<soci::row> rs = (session->prepare << "SELECT id, caption, data FROM IMAGES WHERE id = :1", soci::use(id));
     for (soci::rowset<soci::row>::const_iterator it = rs.begin(); it != rs.end(); ++it) {
         const soci::row& row = *it;

@@ -11,6 +11,8 @@ set(TARGET zim-demo01)
 add_executable(${TARGET})
 
 add_subdirectory(apps)
+add_subdirectory(database)
+add_subdirectory(types)
 
 target_sources(
     ${TARGET}
@@ -20,8 +22,6 @@ target_sources(
         app.hpp
         form_renderer.cpp
         form_renderer.hpp
-        database.cpp
-        database.hpp
         page_master.hpp
 )
 

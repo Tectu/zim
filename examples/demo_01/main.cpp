@@ -1,5 +1,5 @@
 #include "app.hpp"
-#include "database.hpp"
+#include "database/database.hpp"
 
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>

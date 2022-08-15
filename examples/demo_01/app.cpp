@@ -1,5 +1,5 @@
 #include "app.hpp"
-#include "database.hpp"
+#include "database/database.hpp"
 #include "page_master.hpp"
 #include "apps/gallery/app.hpp"
 

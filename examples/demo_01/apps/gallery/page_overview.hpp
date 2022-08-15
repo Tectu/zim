@@ -1,6 +1,6 @@
 #include <zim/page/content.hpp>
 
-#include "../../database.hpp"
+#include "../../database/database.hpp"
 
 namespace apps::gallery::pages
 {
