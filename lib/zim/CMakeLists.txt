@@ -20,6 +20,7 @@ target_include_directories(
     ${TARGET}
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/..>
+        $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/_deps/soci-build/include>     # Cope with bug in soci upstream cmake scripts
 )
 
 target_sources(
