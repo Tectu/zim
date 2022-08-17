@@ -12,6 +12,7 @@ namespace soci
 
 namespace zim::database
 {
+    class client;
 
     /**
      * The database manager.
@@ -46,6 +47,15 @@ namespace zim::database
         [[nodiscard]]
         std::shared_ptr<session>
         get_session() const;
+
+        /**
+         * Creates a database client.
+         *
+         * @return The client.
+         */
+        [[nodiscard]]
+        client
+        make_client() const;
 
     private:
         soci::connection_pool* m_pool = nullptr;
