@@ -1,8 +1,8 @@
 #pragma once
 
 #include "app.hpp"
-#include "database/client.hpp"
 #include "database/config.hpp"
+#include "database/types.hpp"
 
 #include <malloy/server/routing_context.hpp>
 
@@ -77,8 +77,8 @@ namespace zim
         stop();
 
         [[nodiscard]]
-        std::optional<database::client>
-        make_database_client();
+        database::session_getter_t
+        database_session_getter();
 
         template<class App, typename... Args>
             requires std::derived_from<App, app>

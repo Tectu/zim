@@ -48,15 +48,6 @@ namespace zim::database
         std::shared_ptr<session>
         get_session() const;
 
-        /**
-         * Creates a database client.
-         *
-         * @return The client.
-         */
-        [[nodiscard]]
-        client
-        make_client() const;
-
     private:
         soci::connection_pool* m_pool = nullptr;
     };

@@ -28,15 +28,3 @@ manager::get_session() const
 {
     return std::make_shared<session>(*m_pool);
 }
-
-client
-manager::make_client() const
-{
-    client c;
-
-    c.set_session_getter([this]{
-        return this->get_session();
-    });
-
-    return c;
-}

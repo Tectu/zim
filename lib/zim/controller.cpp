@@ -86,13 +86,15 @@ controller::stop()
     m_malloy_session = std::nullopt;
 }
 
-std::optional<database::client>
-controller::make_database_client()
+database::session_getter_t
+controller::database_session_getter()
 {
     if (!m_db_manager)
-        return { };
+        throw std::logic_error("no database manager available.");
 
-    return m_db_manager->make_client();
+    return [this]{
+        return m_db_manager->get_session();
+    };
 }
 
 bool
