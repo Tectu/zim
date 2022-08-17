@@ -7,6 +7,11 @@
 
 #include <filesystem>
 
+namespace spdlog
+{
+    class logger;
+}
+
 namespace zim::pages
 {
     class content;
@@ -21,7 +26,10 @@ namespace zim::pages
     {
     public:
         explicit
-        master(std::filesystem::path template_path);
+        master(
+            std::filesystem::path template_path,
+            std::shared_ptr<spdlog::logger> logger = { }
+        );
 
         master() = delete;
         ~master() override = default;
@@ -46,6 +54,7 @@ namespace zim::pages
         render(const class content& content) const;
 
     private:
+        std::shared_ptr<spdlog::logger> m_logger;
         std::filesystem::path m_tmpl_path;
 
         [[nodiscard]]

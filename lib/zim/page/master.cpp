@@ -3,11 +3,16 @@
 #include "content.hpp"
 
 #include <malloy/core/http/generator.hpp>
+#include <spdlog/logger.h>
 
 using namespace zim::pages;
 
-master::master(std::filesystem::path template_path) :
-    m_tmpl_path(std::move(template_path))
+master::master(
+    std::filesystem::path template_path,
+    std::shared_ptr<spdlog::logger> logger
+) :
+    m_logger{ std::move(logger) },
+    m_tmpl_path{ std::move(template_path) }
 {
 }
 
@@ -17,8 +22,12 @@ master::render_impl(const nlohmann::json& data, const class content* content) co
     using namespace malloy::http;
 
     // Sanity check
-    if (!std::filesystem::is_regular_file(m_tmpl_path))
+    if (!std::filesystem::is_regular_file(m_tmpl_path)) {
+        if (m_logger)
+            m_logger->error("could not locate master template file.");
+
         return generator::server_error("could not locate master template file.");
+    }
 
     // Render
     std::string body;
@@ -39,12 +48,18 @@ master::render_impl(const nlohmann::json& data, const class content* content) co
         body = env.render(tmpl, data);
     }
     catch ([[maybe_unused]] const nlohmann::json::exception& e) {
+        if (m_logger)
+            m_logger->error("JSON exception during template rendering: {}", e.what());
         return generator::server_error("JSON exception during template rendering.");
     }
     catch ([[maybe_unused]] const inja::RenderError& e) {
+        if (m_logger)
+            m_logger->error("inja exception during template rendering: {}", e.what());
         return generator::server_error("Exception during template rendering.");
     }
     catch ([[maybe_unused]] const std::exception& e) {
+        if (m_logger)
+            m_logger->error("General exception during template rendering: {}", e.what());
         return generator::server_error("General exception during template rendering.");
     }
 
