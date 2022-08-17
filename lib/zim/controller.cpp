@@ -86,6 +86,15 @@ controller::stop()
     m_malloy_session = std::nullopt;
 }
 
+std::optional<database::client>
+controller::make_database_client()
+{
+    if (!m_db_manager)
+        return { };
+
+    return m_db_manager->make_client();
+}
+
 bool
 controller::create_toplevel_app()
 {
