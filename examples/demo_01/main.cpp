@@ -1,33 +1,14 @@
 #include "app.hpp"
 #include "database/database.hpp"
+#include "../example.hpp"
 
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 #include <zim/controller.hpp>
 
 #include <iostream>
 
-[[nodiscard]]
-static
-std::shared_ptr<spdlog::logger>
-create_example_logger()
-{
-    auto log_level = spdlog::level::trace;
-
-    // Sink
-    auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-    console_sink->set_level(log_level);
-
-    // Create logger
-    auto logger = std::make_shared<spdlog::logger>("", spdlog::sinks_init_list{ console_sink });
-    logger->set_level(log_level);
-
-    return logger;
-}
-
 int main()
 {
-    auto logger = create_example_logger();
+    auto logger = example::create_logger();
 
     // Setup the database
     auto db = std::make_shared<database>(logger->clone("database"));
