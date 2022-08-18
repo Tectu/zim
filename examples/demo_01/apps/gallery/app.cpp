@@ -44,16 +44,17 @@ app::init()
             auto form = *m_page_upload->m_form;
 
             // Parse form
-            if (!form.parse(req))
+            const auto& data = form.parse(req);
+            if (!data)
                 return generator::bad_request("invalid form data.");
 
             // Re-populate the form's pre-filled values
-            form.populate_values_from_parsed_data();
+            form.populate_values_from_parsed_data(*data);
 
             // Extract values & perform sanity checks
             image img;
-            img.caption = form.content("caption").value_or("");
-            img.data = form.content("image").value_or("");
+            img.caption = data->content("caption").value_or("");
+            img.data = data->content("image").value_or("");
             {
                 if (img.caption.empty())
                     return generator::bad_request("caption must not be empty.");
