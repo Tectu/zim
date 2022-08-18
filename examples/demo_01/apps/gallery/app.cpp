@@ -28,7 +28,7 @@ app::init()
     // Setup pages
     {
         m_page_overview = std::make_shared<pages::overview>(m_master_page, m_db);
-        m_page_upload = std::make_shared<pages::upload>(m_master_page);
+        m_page_upload = std::make_shared<pages::upload>(m_master_page, m_logger, m_db);
     }
 
     // Setup router
@@ -37,42 +37,7 @@ app::init()
         add_page("", m_page_overview);
 
         // Upload page
-        add_page("/upload", m_page_upload);
-
-        // Upload POST endpoint
-        m_router->add(method::post, "/upload", [this](const auto& req){
-            auto form = *m_page_upload->m_form;
-
-            // Parse form
-            const auto& data = form.parse(req);
-            if (!data)
-                return generator::bad_request("invalid form data.");
-
-            // Re-populate the form's pre-filled values
-            form.populate_values_from_parsed_data(*data);
-
-            // Extract values & perform sanity checks
-            image img;
-            img.caption = data->content("caption").value_or("");
-            img.data = data->content("image").value_or("");
-            {
-                if (img.caption.empty())
-                    return generator::bad_request("caption must not be empty.");
-
-                if (img.data.empty())
-                    return generator::bad_request("image must not be empty.");
-            }
-
-            // Insert into database
-            if (const bool successful = m_db->add_image(img); !successful) {
-                m_logger->warn("could not insert image into database.");
-
-                return generator::server_error("could not store image in database.");
-            }
-
-            // Upload was successful, redirect to root page
-            return generator::redirect(status::see_other, "");
-        });
+        add_form("/upload", m_page_upload);
 
         // GET image endpoint
         m_router->add(method::get, "/image/(\\d+)", [this](const auto& req, const auto& captures) {

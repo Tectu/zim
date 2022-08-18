@@ -1,26 +1,30 @@
 #include "../../form_renderer.hpp"
+#include "../../database/database.hpp"
 
 #include <malloy/core/html/form.hpp>
 #include <malloy/core/html/form_renderer.hpp>
-#include <zim/page/content.hpp>
+#include <spdlog/logger.h>
+#include <zim/page/form.hpp>
 
 namespace apps::gallery::pages
 {
 
     class upload:
-        public zim::pages::content
+        public zim::pages::form
     {
     public:
-        std::shared_ptr<malloy::html::form> m_form;
-
         explicit
         upload(
-            std::shared_ptr<zim::pages::master> master_page
+            std::shared_ptr<zim::pages::master> master_page,
+            std::shared_ptr<spdlog::logger> logger,
+            std::shared_ptr<database> db
         ) :
-            zim::pages::content(
+            zim::pages::form(
                 "../../../examples/demo_01/apps/gallery/assets/templates/upload.html",
                 std::move(master_page)
-            )
+            ),
+            m_logger{ std::move(logger) },
+            m_db{ std::move(db) }
         {
             // Setup form
             {
@@ -54,21 +58,49 @@ namespace apps::gallery::pages
                 });
             }
 
-        }
+            // Setup form renderer
+            m_form_renderer = std::make_shared<form_renderer>();
 
-        [[nodiscard]]
-        nlohmann::json
-        data() const override
-        {
-            nlohmann::json j;
+            // Setup form handler
+            {
+                m_handler = [this](const auto& req, const auto& form_data) {
+                    using namespace malloy::http;
 
-            j["form"] = m_form_renderer.render(*m_form);
+                    // Re-populate the form's pre-filled values
+                    // ToDo: This needs to be handled/implemented properly. Ideally supported by the underlying class.
+                    //form.populate_values_from_parsed_data(*data);
 
-            return j;
+                    // Extract values & perform sanity checks
+                    image img;
+                    img.caption = form_data.content("caption").value_or("");
+                    img.data = form_data.content("image").value_or("");
+                    {
+                        // Note: These checks are not really necessary as malloy's form parser ensures that all fields
+                        //       marked as `required` are present in the supplied form data.
+
+                        if (img.caption.empty())
+                            return generator::bad_request("caption must not be empty.");
+
+                        if (img.data.empty())
+                            return generator::bad_request("image must not be empty.");
+                    }
+
+                    // Insert into database
+                    if (const bool successful = m_db->add_image(img); !successful) {
+                        m_logger->warn("could not insert image into database.");
+
+                        return generator::server_error("could not store image in database.");
+                    }
+
+                    // Upload was successful, redirect to root page
+                    return generator::redirect(status::see_other, "");
+                };
+            }
         }
 
     private:
-        form_renderer m_form_renderer;
+        std::shared_ptr<spdlog::logger> m_logger;
+        std::shared_ptr<database> m_db;
     };
 
 }

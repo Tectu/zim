@@ -19,6 +19,7 @@ namespace zim
 
     namespace pages
     {
+        class form;
         class page;
     }
 
@@ -78,6 +79,19 @@ namespace zim
          */
         bool
         add_page(std::string&& resource, std::shared_ptr<pages::page> page);
+
+        /**
+         * Adds a GET and POST endpoint for a page representing a single form.
+         *
+         * @details In simple scenarios, working with HTML forms involves providing a GET endpoint to retrieve the
+         *          HTML form and a POST endpoint to process supplied data. This function does exactly that.
+         *
+         * @param resource The target path.
+         * @param page The form page.
+         * @return Whether adding the endpoints was successful.
+         */
+        bool
+        add_form(std::string&& resource, std::shared_ptr<pages::form> page);
 
         /**
          * Makes a new sub-application of type @ref App.
