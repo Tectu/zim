@@ -17,7 +17,7 @@ master::master(
 }
 
 malloy::http::response<>
-master::render_impl(const nlohmann::json& data, const class content* content) const
+master::render(const nlohmann::json& data, const class content* content) const
 {
     using namespace malloy::http;
 
@@ -75,7 +75,7 @@ master::render_impl(const nlohmann::json& data, const class content* content) co
 malloy::http::response<>
 master::render() const
 {
-    return render_impl(data(), nullptr);
+    return render(data(), nullptr);
 }
 
 malloy::http::response<>
@@ -85,5 +85,5 @@ master::render(const class content& content) const
     nlohmann::json jd = data();
     jd["content"] = content.data();
 
-    return render_impl(jd, &content);
+    return render(jd, &content);
 }

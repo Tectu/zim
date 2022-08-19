@@ -53,6 +53,18 @@ namespace zim::pages
         malloy::http::response<>
         render(const class content& content) const;
 
+    protected:
+        /**
+         * Renders a template with optional content.
+         *
+         * @param data The template data.
+         * @param content The content page (if any).
+         * @return The HTTP response.
+         */
+        [[nodiscard]]
+        malloy::http::response<>
+        render(const nlohmann::json& data, const class content* content) const;
+
     private:
         std::shared_ptr<spdlog::logger> m_logger;
         std::filesystem::path m_tmpl_path;
@@ -61,10 +73,6 @@ namespace zim::pages
         virtual
         nlohmann::json
         data() const = 0;
-
-        [[nodiscard]]
-        malloy::http::response<>
-        render_impl(const nlohmann::json& data, const class content* content) const;
     };
 
 }
