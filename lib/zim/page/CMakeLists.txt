@@ -7,11 +7,13 @@ target_sources(
         FILES
             content.hpp
             form.hpp
+            forms.hpp
             master.hpp
             page.hpp
 
     PRIVATE
         content.cpp
         form.cpp
+        forms.cpp
         master.cpp
 )

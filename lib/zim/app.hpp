@@ -20,6 +20,7 @@ namespace zim
     namespace pages
     {
         class form;
+        class forms;
         class page;
     }
 
@@ -92,6 +93,9 @@ namespace zim
          */
         bool
         add_form(std::string&& resource, std::shared_ptr<pages::form> page);
+
+        bool
+        add_form(std::string&& resource, std::shared_ptr<pages::forms> page);
 
         /**
          * Makes a new sub-application of type @ref App.
