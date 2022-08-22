@@ -22,7 +22,7 @@ forms::data() const
 
     data["forms"] = nlohmann::json::array();
     for (std::size_t i = 0; i < m_forms.size(); i++)
-        data["forms"].emplace_back(m_form_renderer->render(*m_forms.at(i).form));
+        data["forms"].emplace_back(m_form_renderer->render(*m_forms.at(i).form.get()));
 
     return data;
 }
