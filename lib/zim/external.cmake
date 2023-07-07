@@ -4,18 +4,29 @@ include(FetchContent)
 ########################################################################################################################
 # malloy: https://github.com/tectu/malloy
 ########################################################################################################################
-find_package(
+FetchContent_Declare(
     malloy
-    REQUIRED
+    GIT_REPOSITORY https://github.com/tectu/malloy
+    GIT_TAG        main
 )
+FetchContent_GetProperties(malloy)
+if(NOT malloy_POPULATED)
+    FetchContent_Populate(malloy)
+    set(MALLOY_BUILD_EXAMPLES OFF CACHE INTERNAL "")
+    set(MALLOY_BUILD_TESTS OFF CACHE INTERNAL "")
+    set(MALLOY_BUILD_SHARED OFF CACHE INTERNAL "")
+    set(MALLOY_FEATURE_CLIENT OFF CACHE INTERNAL "")
+    set(MALLOY_FEATURE_SERVER ON CACHE INTERNAL "")
+    set(MALLOY_FEATURE_HTML ON CACHE INTERNAL "")
+    set(MALLOY_FEATURE_TLS ${ELX_FEATURE_TLS} CACHE INTERNAL "")
+    set(MALLOY_DEPENDENCY_FMT_DOWNLOAD OFF CACHE INTERNAL "")
+    set(MALLOY_DEPENDENCY_SPDLOG_DOWNLOAD OFF CACHE INTERNAL "")
 
-########################################################################################################################
-# nlohmann/json: https://github.com/nlohmann/json
-########################################################################################################################
-find_package(
-    nlohmann_json
-    REQUIRED
-)
+    add_subdirectory(${malloy_SOURCE_DIR} ${malloy_BINARY_DIR} EXCLUDE_FROM_ALL)    # EXCLUDE_FROM_ALL to prevent install()
+
+    add_library(malloy::malloy-server ALIAS malloy-server)      # ToDo: Should this be part of malloy itself?
+endif()
+
 
 ########################################################################################################################
 # SOCI: https://github.com/SOCI/soci
