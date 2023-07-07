@@ -29,7 +29,11 @@ app::init()
     make_subapp<apps::gallery::app>("gallery", m_db, m_master_page);
 
     // Endpoints
-    m_router->add_file_serving("/assets", "../../../examples/demo_01/assets");
+    m_router->add_file_serving(
+        "/assets",
+        "../../../examples/demo_01/assets",
+        []() -> std::string { return "max-age=120"; }
+    );
 
     return true;
 }
