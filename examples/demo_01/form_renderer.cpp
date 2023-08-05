@@ -1,5 +1,6 @@
 #include "form_renderer.hpp"
 
+#include <malloy/core/http/http.hpp>
 #include <malloy/core/html/form.hpp>
 
 #include <sstream>
@@ -11,7 +12,7 @@ form_renderer::render(const malloy::html::form& f) const
 
     std::stringstream ss;
 
-    ss << "<form class=\"w3-container\" method=\"" << boost::beast::http::to_string(f.method()) << "\" action=\"" << f.action() << "\" enctype=\"" << f.encoding_to_string() << "\">\n";
+    ss << "<form class=\"w3-container\" method=\"" << malloy::to_string(f.method()) << "\" action=\"" << f.action() << "\" enctype=\"" << f.encoding_to_string() << "\">\n";
     for (const form_field& field : f.fields()) {
         if (field.type == "submit") {
             ss << "  <button class=\"w3-btn w3-padding w3-teal\" style=\"width:120px\" type=\"submit\">" + field.name + "</button>";
